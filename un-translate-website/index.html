@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UN Multilingual Translation Service</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      /* UN Brand Variables */
+      :root {
+          --un-blue: #009EDB;       /* Official UN Blue */
+          --un-blue-dark: #0073B7;  /* Slightly darker variant for hover states */
+      }
+      
+      body {
+          background-color: var(--un-blue);
+          color: #fff;
+          padding-top: 2rem;
+          font-family: "Helvetica Neue", Arial, sans-serif;
+      }
+      
+      h1, h2, h3, h4, h5 {
+          font-weight: 600;
+      }
+      
+      /* Container / Card Styling */
+      .container {
+          max-width: 1000px;
+          background-color: #fff; /* White card background */
+          color: #333;            /* Dark text inside the card */
+          border-radius: 0.5rem;
+          padding: 2rem;
+          margin: 2rem auto;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+      
+      .card {
+          border: none;
+          margin-bottom: 1.5rem;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .card-header, .card-body {
+          background-color: #fff;
+          color: #333;
+      }
+      
+      /* Additional UI enhancements */
+      .card-header {
+          font-weight: 600;
+          color: white;
+          background-color: var(--un-blue);
+          border-bottom: 1px solid var(--un-blue-dark);
+      }
+      
+      .sample-text-header {
+          color: white;
+          background-color: var(--un-blue);
+          padding: 0.75rem 1.25rem;
+          font-weight: 600;
+          border-bottom: 1px solid var(--un-blue-dark);
+      }
+      
+      .swapper {
+          background-color: var(--un-blue);
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          transition: background-color 0.2s;
+      }
+      
+      .swapper:hover {
+          background-color: var(--un-blue-dark);
+      }
+      
+      /* Buttons */
+      .btn-primary {
+          background-color: var(--un-blue);
+          border-color: var(--un-blue);
+      }
+      
+      .btn-primary:hover {
+          background-color: var(--un-blue-dark);
+          border-color: var(--un-blue-dark);
+      }
+      
+      .btn-outline-secondary {
+          border-color: var(--un-blue-dark);
+          color: var(--un-blue-dark);
+      }
+      
+      .btn-outline-secondary:hover {
+          background-color: var(--un-blue-dark);
+          color: #fff;
+          border-color: var(--un-blue-dark);
+      }
+      
+      /* UN Logo styling */
+      .un-logo {
+          max-height: 60px;
+          margin-right: 1rem;
+      }
+      
+      /* Translation areas, sample text, etc. */
+      .translation-area {
+          min-height: 150px;
+          resize: vertical;
+          border: 1px solid #ced4da;
+          border-radius: 0.25rem;
+      }
+      
+      .result-area {
+          min-height: 150px;
+          background-color: #f8f9fa;
+          border: 1px solid #ced4da;
+          border-radius: 0.25rem;
+          padding: 0.5rem;
+      }
+      
+      /* Sample Text Buttons */
+      .sample-buttons {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+      }
+      
+      .sample-text {
+          margin-bottom: 1rem;
+          border-color: var(--un-blue);
+          color: var(--un-blue);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex: 1;
+      }
+      
+      .sample-text:hover {
+          background-color: var(--un-blue);
+          color: white;
+      }
+      
+      /* Highlight for enforced terms */
+      .highlight {
+          background-color: #ffff99;
+          font-weight: bold;
+      }
+      
+      /* Loading spinner alignment */
+      .loading {
+          display: none;
+      }
+      
+      .form-switch .form-check-input:checked {
+          background-color: var(--un-blue);
+          border-color: var(--un-blue);
+      }
+      
+      .translate-btn {
+          background-color: var(--un-blue);
+          color: white;
+          padding: 0.75rem 2rem;
+          font-weight: 500;
+          border-radius: 0.25rem;
+          border: none;
+          transition: all 0.2s;
+      }
+      
+      .translate-btn:hover {
+          background-color: var(--un-blue-dark);
+          transform: translateY(-2px);
+      }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+      <div class="row mb-4">
+          <div class="col-md-12 text-center">
+              <h1>
+                  <!-- Updated to reference the local image in the images/ folder -->
+                  <img src="images/UN_emblem_blue.svg.png" alt="UN Logo" class="un-logo">
+                  UN Multilingual Translation Service
+              </h1>
+              <p style="color: var(--un-blue);">Powered by Azure AI Foundry</p>
+          </div>
+      </div>
+
+      <div class="card mb-4">
+          <div class="card-body">
+              <form id="translateForm">
+                  <div class="row mb-3">
+                      <div class="col-md-5">
+                          <label for="sourceLanguage" class="form-label">Source Language:</label>
+                          <select class="form-select" id="sourceLanguage" name="sourceLanguage">
+                              <option value="ar" selected>Arabic</option>
+                              <option value="zh-Hans">Chinese (Simplified)</option>
+                              <option value="en">English</option>
+                              <option value="fr">French</option>
+                              <option value="ru">Russian</option>
+                              <option value="es">Spanish</option>
+                          </select>
+                      </div>
+                      <div class="col-md-2 d-flex align-items-center justify-content-center">
+                          <button type="button" id="swapLanguages" class="btn swapper">
+                              ↔️ Swap
+                          </button>
+                      </div>
+                      <div class="col-md-5">
+                          <label for="targetLanguage" class="form-label">Target Language:</label>
+                          <select class="form-select" id="targetLanguage" name="targetLanguage">
+                              <option value="ar">Arabic</option>
+                              <option value="zh-Hans">Chinese (Simplified)</option>
+                              <option value="en" selected>English</option>
+                              <option value="fr">French</option>
+                              <option value="ru">Russian</option>
+                              <option value="es">Spanish</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="row mb-3">
+                      <div class="col">
+                          <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="useStrictMode" name="useStrictMode" checked>
+                              <label class="form-check-label" for="useStrictMode">
+                                  <strong>UN Terminology Enforcement</strong> (use approved terminology)
+                              </label>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="text" class="form-label">Source Text:</label>
+                          <textarea class="form-control translation-area" id="text" name="text" placeholder="Enter text to translate...">هذا بيان عن فلسطين.</textarea>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                          <label for="result" class="form-label">Translation Result:</label>
+                          <div class="result-area" id="result"></div>
+                      </div>
+                  </div>
+
+                  <div class="row">
+                      <div class="col text-center">
+                          <button type="submit" class="translate-btn">
+                              Translate
+                          </button>
+                          <div id="loading" class="spinner-border text-primary mt-3 loading" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+          </div>
+      </div>
+
+      <div class="card">
+          <div class="card-header">
+              Sample Texts
+          </div>
+          <div class="card-body">
+              <div class="sample-buttons">
+                  <button class="btn btn-outline-primary sample-text" data-lang="ar" data-text="هذا بيان عن فلسطين.">
+                      Arabic: Statement about Palestine
+                  </button>
+                  <button class="btn btn-outline-primary sample-text" data-lang="en" data-text="The Secretary-General visited Palestine last week.">
+                      English: Secretary-General Visit
+                  </button>
+                  <button class="btn btn-outline-primary sample-text" data-lang="fr" data-text="La Palestine est un sujet important pour l'ONU.">
+                      French: Palestine Statement
+                  </button>
+              </div>
+          </div>
+      </div>
+
+      <p class="text-center mt-4" style="color: var(--un-blue);">
+          <small>United Nations Multilingual Translation Demo - Powered by Azure AI Services</small>
+      </p>
+  </div>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const form = document.getElementById('translateForm');
+          const sourceLanguageSelect = document.getElementById('sourceLanguage');
+          const targetLanguageSelect = document.getElementById('targetLanguage');
+          const textArea = document.getElementById('text');
+          const resultDiv = document.getElementById('result');
+          const swapLanguagesBtn = document.getElementById('swapLanguages');
+          const loading = document.getElementById('loading');
+          const sampleTextBtns = document.querySelectorAll('.sample-text');
+          
+          // Replace with your actual function URL and key
+          const functionUrl = 'https://un-translate-demo.azurewebsites.net/api/translate?code=Q5nifQGyPVoya9vSS314IphqC3lZcNlV7yX2_RFhPoRjAzFuiyqqBw==';
+
+          // Handle form submission
+          form.addEventListener('submit', async function(e) {
+              e.preventDefault();
+              
+              const sourceText = textArea.value.trim();
+              if (!sourceText) return;
+              
+              // Show loading spinner
+              loading.style.display = 'inline-block';
+              
+              // Build request payload
+              const payload = {
+                  text: sourceText,
+                  sourceLanguage: sourceLanguageSelect.value,
+                  targetLanguage: targetLanguageSelect.value,
+                  useStrictMode: document.getElementById('useStrictMode').checked
+              };
+              
+              try {
+                  // Call Azure Function
+                  const response = await fetch(functionUrl, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(payload)
+                  });
+                  
+                  // Process the response
+                  if (response.ok) {
+                      const data = await response.json();
+                      
+                      // Display only the translated text, not the full JSON
+                      resultDiv.textContent = data.translatedText;
+                      
+                      // Highlight UN terms if strict mode is on
+                      if (payload.useStrictMode) {
+                          highlightTerms();
+                      }
+                  } else {
+                      const errorData = await response.json();
+                      resultDiv.textContent = `Error: ${errorData.error || response.statusText}`;
+                  }
+              } catch (error) {
+                  console.error('Error:', error);
+                  resultDiv.textContent = 'An error occurred during translation.';
+              } finally {
+                  // Hide loading spinner
+                  loading.style.display = 'none';
+              }
+          });
+          
+          // Function to highlight terminology terms
+          function highlightTerms() {
+              const text = resultDiv.textContent;
+              const terms = [
+                  'occupied Palestinian territory',
+                  'Secretary-General of the United Nations'
+              ];
+              
+              let highlightedText = text;
+              terms.forEach(term => {
+                  const regex = new RegExp(term, 'gi');
+                  highlightedText = highlightedText.replace(regex, match => 
+                      `<span class="highlight">${match}</span>`
+                  );
+              });
+              
+              resultDiv.innerHTML = highlightedText;
+          }
+          
+          // Swap languages button
+          swapLanguagesBtn.addEventListener('click', function() {
+              const sourceValue = sourceLanguageSelect.value;
+              const targetValue = targetLanguageSelect.value;
+              
+              sourceLanguageSelect.value = targetValue;
+              targetLanguageSelect.value = sourceValue;
+          });
+          
+          // Sample text buttons
+          sampleTextBtns.forEach(btn => {
+              btn.addEventListener('click', function() {
+                  const lang = this.getAttribute('data-lang');
+                  const text = this.getAttribute('data-text');
+                  
+                  sourceLanguageSelect.value = lang;
+                  textArea.value = text;
+                  resultDiv.textContent = '';
+              });
+          });
+      });
+  </script>
+</body>
+</html>
